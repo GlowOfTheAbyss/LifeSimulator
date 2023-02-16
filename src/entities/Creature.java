@@ -1,6 +1,6 @@
 package entities;
 
-public abstract class Creature implements Reproducing, Cloneable {
+public abstract class Creature implements Reproducing {
 
     protected static int idCounter = 0;
 
@@ -35,13 +35,4 @@ public abstract class Creature implements Reproducing, Cloneable {
         return maxNumberPerCell;
     }
 
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
