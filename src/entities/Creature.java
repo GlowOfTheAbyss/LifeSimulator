@@ -1,9 +1,31 @@
 package entities;
 
-public abstract class Creature implements Reproducing {
+public abstract class Creature implements Reproducing, Cloneable {
 
+    protected static int idCounter = 0;
+
+    protected int id;
+    protected String name;
+    protected String image;
     protected int weight;
     protected int maxNumberPerCell;
+
+    public Creature() {
+        this.id = idCounter;
+        idCounter++;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImage() {
+        return image;
+    }
 
     public int getWeight() {
         return weight;
@@ -13,4 +35,13 @@ public abstract class Creature implements Reproducing {
         return maxNumberPerCell;
     }
 
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
