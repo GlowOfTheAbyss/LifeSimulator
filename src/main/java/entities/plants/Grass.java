@@ -1,4 +1,4 @@
-package entities.plants;
+package main.java.entities.plants;
 
 public class Grass extends Plant {
 

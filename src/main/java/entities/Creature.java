@@ -1,10 +1,10 @@
-package entities;
+package main.java.entities;
 
 public abstract class Creature implements Reproducing {
 
-    protected static int idCounter = 0;
+    protected static long idCounter = 0;
 
-    protected int id;
+    protected long id;
     protected String name;
     protected String image;
     protected int weight;
@@ -15,7 +15,7 @@ public abstract class Creature implements Reproducing {
         idCounter++;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

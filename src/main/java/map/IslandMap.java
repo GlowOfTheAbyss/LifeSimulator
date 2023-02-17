@@ -1,17 +1,16 @@
-package map;
+package main.java.map;
 
 public class IslandMap {
 
-    private static final IslandMap ISLAND_MAP = new IslandMap();
-
     private Cell[][] cells;
 
-    private IslandMap() {}
+    public IslandMap() {}
 
-    public void createMap(int length, int height) {
+    public IslandMap createMap(int length, int height) {
 
         generateCells(length, height);
         linkCells();
+        return this;
 
     }
 
@@ -56,7 +55,4 @@ public class IslandMap {
         return cells;
     }
 
-    public static IslandMap getIslandMap() {
-        return ISLAND_MAP;
-    }
 }

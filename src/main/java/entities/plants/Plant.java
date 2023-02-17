@@ -1,12 +1,14 @@
-package entities.plants;
+package main.java.entities.plants;
 
-import entities.Creature;
+import main.java.entities.Creature;
 
 public abstract class Plant extends Creature {
 
     @Override
     public void reproduce() {
-        // reproduce logic
+
+
+
     }
 
 }

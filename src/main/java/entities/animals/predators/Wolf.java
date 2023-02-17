@@ -1,4 +1,4 @@
-package entities.animals.predators;
+package main.java.entities.animals.predators;
 
 public class Wolf extends Predator {
 
@@ -12,7 +12,8 @@ public class Wolf extends Predator {
         weight = 50;
         maxNumberPerCell = 30;
 
-        maxSpeed = 3;
+        maxMovement = 3;
+        remainingMovement = maxMovement;
         maxSaturation = 8;
         currentSaturation = maxSaturation / 2;
 
