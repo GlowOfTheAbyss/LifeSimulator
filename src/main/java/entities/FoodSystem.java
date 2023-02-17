@@ -39,13 +39,9 @@ public class FoodSystem {
                 }
 
                 for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
-
                     if (creature.getName().equals(sheet.getRow(0).getCell(i1).getStringCellValue())) {
-
                         valuesMap.put(creature, (int) sheet.getRow(i).getCell(i1).getNumericCellValue());
-
                     }
-
                 }
 
             }

@@ -35,7 +35,7 @@ public class Cell {
     }
 
     public int thisCreaturesInCell(Creature thisCreature) {
-        int result = 1;
+        int result = 0;
         for (Creature creature : this.getCreatures()) {
             if (creature.getName().equals(thisCreature.getName())) {
                 result++;

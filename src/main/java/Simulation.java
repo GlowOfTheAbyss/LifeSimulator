@@ -29,8 +29,6 @@ public class Simulation {
 
         while (counter > 0) {
 
-            printStatistics();
-
             for (Cell[] cells : islandMap.getCells()) {
                 for (Cell cell : cells) {
 
@@ -52,6 +50,24 @@ public class Simulation {
             printStatistics();
 
             sleep(5000);
+            for (Cell[] cells : islandMap.getCells()) {
+                for (Cell cell : cells) {
+                    for (int i = 0; i < cell.getCreatures().size(); i++) {
+                        Creature creature = cell.getCreatures().get(i);
+
+                        if (creature instanceof Animal) {
+                            ((Animal) creature).setRemainingMovement(((Animal) creature).getMaxSaturation());
+                            ((Animal) creature).setCurrentSaturation(((Animal) creature).getCurrentSaturation() - ((Animal) creature).getMaxSaturation() / 4);
+
+                            if (((Animal) creature).getCurrentSaturation() <= 0) {
+                                cell.getCreatures().remove(creature);
+                                System.out.println(creature.getId() + " " + creature.getImage() + " умер от голода");
+                            }
+                        }
+
+                    }
+                }
+            }
             counter--;
 
         }

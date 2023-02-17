@@ -46,7 +46,7 @@ public abstract class Animal extends Creature implements Moving, Eating {
     public void reproduce(Cell cell) {
         synchronized (cell) {
 
-            if (cell.thisCreaturesInCell(this) >= 2 || cell.thisCreaturesInCell(this) < maxNumberPerCell) {
+            if (cell.thisCreaturesInCell(this) >= 2 && cell.thisCreaturesInCell(this) < maxNumberPerCell) {
 
                 if (ThreadLocalRandom.current().nextInt(100) > 25) {
 
