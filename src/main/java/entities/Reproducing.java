@@ -1,7 +1,9 @@
 package main.java.entities;
 
+import main.java.map.Cell;
+
 public interface Reproducing {
 
-    void reproduce();
+    void reproduce(Cell cell);
 
 }

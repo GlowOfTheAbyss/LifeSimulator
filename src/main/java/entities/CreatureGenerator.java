@@ -17,7 +17,7 @@ public class CreatureGenerator {
     private final List<Creature> creatures = new ArrayList<>();
 
     private CreatureGenerator() {
-//        creatures.add(new Grass());
+        creatures.add(new Grass());
         creatures.add(new Wolf());
         creatures.add(new Sheep());
     }

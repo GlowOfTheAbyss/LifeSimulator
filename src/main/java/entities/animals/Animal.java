@@ -1,6 +1,7 @@
 package main.java.entities.animals;
 
 import main.java.entities.Creature;
+import main.java.entities.CreatureGenerator;
 import main.java.entities.FoodSystem;
 import main.java.map.Cell;
 
@@ -41,10 +42,27 @@ public abstract class Animal extends Creature implements Moving, Eating {
         this.currentSaturation = currentSaturation;
     }
 
-    public void reproduce() {
-        // reproduce logic
+    @Override
+    public void reproduce(Cell cell) {
+        synchronized (cell) {
+
+            if (cell.thisCreaturesInCell(this) >= 2 || cell.thisCreaturesInCell(this) < maxNumberPerCell) {
+
+                if (ThreadLocalRandom.current().nextInt(100) > 25) {
+
+                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
+
+                    cell.getCreatures().add(newCreature);
+                    System.out.println(newCreature.getId() + " " + newCreature.getImage() + " появился в " + cell.getId());
+
+                }
+
+            }
+
+        }
     }
 
+    @Override
     public void move(Cell cell) {
 
         int thisCreatureInCell = cell.thisCreaturesInCell(this);
@@ -78,49 +96,70 @@ public abstract class Animal extends Creature implements Moving, Eating {
         int targetCellThisCreature = 0;
         int targetCellFood = 0;
 
-        for (Cell adjacentCell : cell.getAdjacentCells()) {
+        synchronized (cell) {
 
-            if (targetCell == null) {
-                targetCell = adjacentCell;
-                targetCellThisCreature = adjacentCell.thisCreaturesInCell(this);
-                targetCellFood = cell.foodInTheCell(this);
-            } else {
-                if (adjacentCell.thisCreaturesInCell(this) < targetCellThisCreature || cell.foodInTheCell(this) > targetCellFood) {
+            for (Cell adjacentCell : cell.getAdjacentCells()) {
+
+                if (targetCell == null) {
                     targetCell = adjacentCell;
+                    targetCellThisCreature = adjacentCell.thisCreaturesInCell(this);
+                    targetCellFood = cell.foodInTheCell(this);
+                } else {
+                    if (adjacentCell.thisCreaturesInCell(this) < targetCellThisCreature || cell.foodInTheCell(this) > targetCellFood) {
+                        targetCell = adjacentCell;
+                    }
                 }
+
+            }
+
+            if (targetCellThisCreature == maxNumberPerCell) {
+                return;
+            }
+
+            synchronized (targetCell) {
+
+                cell.getCreatures().remove(this);
+                targetCell.getCreatures().add(this);
+
+                System.out.println(this.getId() + " " + this.getImage() + " : " + cell.getId() + " -> " + targetCell.getId());
+
             }
 
         }
-
-        if (targetCellThisCreature == maxNumberPerCell) {
-            return;
-        }
-
-        cell.getCreatures().remove(this);
-        targetCell.getCreatures().add(this);
 
     }
 
     @Override
     public void eat(Cell cell) {
 
-        if (cell.foodInTheCell(this) == 0) {
-            return;
-        }
-
         Map<Creature, Integer> foodMap = FoodSystem.getFoodSystem().getFoodForCreature(this);
 
         for (Creature creature : foodMap.keySet()) {
-            for (Creature cellCreature : cell.getCreatures()) {
+            for (int i = 0; i < cell.getCreatures().size(); i++) {
+                Creature cellCreature = cell.getCreatures().get(i);
 
                 if (creature.getName().equals(cellCreature.getName())) {
 
                     Integer chance = foodMap.get(creature);
 
+                    if (ThreadLocalRandom.current().nextInt(0, 100) < chance) {
 
+                        synchronized (cell) {
+
+                            currentSaturation = currentSaturation + cellCreature.getWeight();
+                            if (currentSaturation > maxSaturation) {
+                                currentSaturation = maxSaturation;
+                            }
+
+                            System.out.println(this.getId() + " " + this.getImage() + " ест " + cellCreature.getId() + " " + cellCreature.getImage());
+
+                            cell.getCreatures().remove(cellCreature);
+
+                        }
+
+                    }
 
                 }
-
             }
         }
 

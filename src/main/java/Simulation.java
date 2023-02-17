@@ -25,7 +25,7 @@ public class Simulation {
 
     public void start() {
 
-        int counter = 10;
+        int counter = 3;
 
         while (counter > 0) {
 
@@ -42,7 +42,7 @@ public class Simulation {
                             ((Animal) creature).eat(cell);
                         }
 
-                        creature.reproduce();
+                        creature.reproduce(cell);
 
                     }
 
