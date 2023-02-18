@@ -7,6 +7,10 @@ import main.java.entities.animals.Animal;
 import main.java.loger.Logger;
 import main.java.map.IslandMap;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class Simulation {
 
     private final IslandMap islandMap;
@@ -24,6 +28,12 @@ public class Simulation {
     }
 
     public void start() {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+        });
 
         int temp = 5;
 

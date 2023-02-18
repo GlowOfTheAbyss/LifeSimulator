@@ -38,7 +38,7 @@ public class Location {
         return adjacentLocations;
     }
 
-    public int thisCreaturesInLocation(Creature thisCreature) {
+    public synchronized int thisCreaturesInLocation(Creature thisCreature) {
         int result = 0;
         for (Creature creature : this.getCreatures()) {
             if (creature.getName().equals(thisCreature.getName())) {

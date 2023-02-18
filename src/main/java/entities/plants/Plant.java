@@ -15,25 +15,20 @@ public abstract class Plant extends Creature {
 
             int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
-            int random = ThreadLocalRandom.current().nextInt(1, 5);
+            if (thisCreaturesInLocation < maxCreaturePerLocation) {
 
-            for (int i = 0; i < random; i++) {
+                Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
+                location.getCreatures().add(newCreature);
+                Logger.getLogger().addNewCreature(newCreature);
 
-                if (thisCreaturesInLocation < maxCreaturePerLocation) {
+            } else {
 
+                Location randomAdjacentLocation = location.getAdjacentLocations().get(ThreadLocalRandom.current().nextInt(location.getAdjacentLocations().size()));
+                if (randomAdjacentLocation.thisCreaturesInLocation(this) < maxCreaturePerLocation) {
                     Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
-                    location.getCreatures().add(newCreature);
+                    randomAdjacentLocation.getCreatures().add(newCreature);
                     Logger.getLogger().addNewCreature(newCreature);
 
-                } else {
-
-                    Location randomAdjacentLocation = location.getAdjacentLocations().get(ThreadLocalRandom.current().nextInt(location.getAdjacentLocations().size()));
-                    if (randomAdjacentLocation.thisCreaturesInLocation(this) < maxCreaturePerLocation) {
-                        Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
-                        randomAdjacentLocation.getCreatures().add(newCreature);
-                        Logger.getLogger().addNewCreature(newCreature);
-
-                    }
                 }
             }
         }
