@@ -7,9 +7,6 @@ import main.java.entities.animals.Animal;
 import main.java.loger.Logger;
 import main.java.map.IslandMap;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class Simulation {
 
     private final IslandMap islandMap;
@@ -28,14 +25,15 @@ public class Simulation {
 
     public void start() {
 
-        int counter = 3;
-        while (counter > 0) {
+        int temp = 5;
+
+        while (temp > 0) {
 
             for (Creature creature : islandMap.getAllCreature()) {
 
                 if (creature instanceof Animal) {
                     ((Animal) creature).move();
-//                       ((Animal) creature).eat();
+                    ((Animal) creature).eat();
                 }
                 creature.reproduce();
                 if (creature instanceof Animal) {
@@ -47,7 +45,8 @@ public class Simulation {
             Logger.getLogger().printStatistic(islandMap);
 
             sleep(3000);
-            counter--;
+            temp--;
+
         }
 
     }

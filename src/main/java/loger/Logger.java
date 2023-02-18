@@ -50,11 +50,10 @@ public class Logger {
         for (Location[] locations : map.getLocations()) {
             for (Location location : locations) {
                 Map<Creature, Integer> creatureInLocation = findNumberCreaturesInLocation(location);
+
                 System.out.print("|");
                 for (Creature creature : creatureInLocation.keySet()) {
-
                     System.out.print(creature.getImage() + ":" + creatureInLocation.get(creature) + " ");
-
                 }
                 System.out.println("|");
 

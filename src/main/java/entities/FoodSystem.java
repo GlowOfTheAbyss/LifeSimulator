@@ -17,6 +17,9 @@ public class FoodSystem {
     public void generateFoodSystem() {
 
         Sheet sheet = FileLoader.getFileLoader().loadFoodTable();
+        if (sheet == null) {
+            throw new IllegalArgumentException();
+        }
 
         for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
 
