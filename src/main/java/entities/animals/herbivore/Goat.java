@@ -6,7 +6,7 @@ public class Goat extends Herbivore {
 
         super();
 
-        name = "Коза    ";
+        name = "Коза";
         image = "\uD83D\uDC10";
 
         weight = 60;

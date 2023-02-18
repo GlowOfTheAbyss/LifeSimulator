@@ -21,7 +21,7 @@ public abstract class Plant extends Creature {
 
                 if (thisCreaturesInLocation < maxCreaturePerLocation) {
 
-                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
+                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
                     location.getCreatures().add(newCreature);
                     Logger.getLogger().addNewCreature(newCreature);
 
@@ -29,7 +29,7 @@ public abstract class Plant extends Creature {
 
                     Location randomAdjacentLocation = location.getAdjacentLocations().get(ThreadLocalRandom.current().nextInt(location.getAdjacentLocations().size()));
                     if (randomAdjacentLocation.thisCreaturesInLocation(this) < maxCreaturePerLocation) {
-                        Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
+                        Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
                         randomAdjacentLocation.getCreatures().add(newCreature);
                         Logger.getLogger().addNewCreature(newCreature);
 

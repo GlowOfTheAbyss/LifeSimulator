@@ -72,7 +72,6 @@ public class Logger {
             }
             System.out.print(creature.getImage() + " : " + number + " ");
         }
-        clearDeadCreature();
         System.out.println();
 
         System.out.println("Умерло:");

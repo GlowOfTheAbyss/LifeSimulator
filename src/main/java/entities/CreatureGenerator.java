@@ -43,7 +43,7 @@ public class CreatureGenerator {
 
             for (Location cell : cells) {
 
-                cellFillCreature(cell);
+                locationFillCreature(cell);
 
             }
 
@@ -51,7 +51,7 @@ public class CreatureGenerator {
 
     }
 
-    private void cellFillCreature(Location cell) {
+    private void locationFillCreature(Location location) {
 
         for (Creature creature : creatures) {
 
@@ -59,10 +59,10 @@ public class CreatureGenerator {
 
             for (int i = 0; i < numberOfCreatures; i++) {
 
-                Creature newCreature = getNewCreature(creature);
-                newCreature.setLocation(cell);
+                Creature newCreature = getNewCreature(creature, location);
 
-                cell.getCreatures().add(newCreature);
+                newCreature.setLocation(location);
+                location.getCreatures().add(newCreature);
 
             }
 
@@ -70,11 +70,14 @@ public class CreatureGenerator {
 
     }
 
-    public Creature getNewCreature(Creature creature) {
+    public Creature getNewCreature(Creature creature, Location location) {
 
         try {
             Constructor<? extends Creature> constructor = creature.getClass().getConstructor();
-            return constructor.newInstance();
+            Creature newCreature = constructor.newInstance();
+            newCreature.setLocation(location);
+            return newCreature;
+
         } catch (Exception e) {
             System.out.println("error when creating a creature");
             e.printStackTrace();

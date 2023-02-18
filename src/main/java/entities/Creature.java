@@ -22,10 +22,6 @@ public abstract class Creature implements Reproducing {
         idCounter++;
     }
 
-    public boolean isDead() {
-        return isDead;
-    }
-
     public void setDead(boolean dead) {
         isDead = dead;
     }

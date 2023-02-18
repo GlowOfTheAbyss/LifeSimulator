@@ -1,5 +1,10 @@
 package main.java.map;
 
+import main.java.entities.Creature;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class IslandMap {
 
     private Location[][] locations;
@@ -48,6 +53,19 @@ public class IslandMap {
             }
 
         }
+
+    }
+
+    public List<Creature> getAllCreature() {
+        List<Creature> allCreatures = new ArrayList<>();
+
+        for (Location[] locations : locations) {
+            for (Location location : locations) {
+                allCreatures.addAll(location.getCreatures());
+            }
+        }
+
+        return allCreatures;
 
     }
 

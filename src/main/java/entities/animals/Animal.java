@@ -23,7 +23,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
     @Override
     public void reproduce() {
-        if (isDead()) {
+        if (isDead) {
             return;
         }
 
@@ -34,7 +34,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
 
                 if (ThreadLocalRandom.current().nextInt(101) > 25) {
-                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
+                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
 
                     location.addCreature(newCreature);
                     Logger.getLogger().addNewCreature(newCreature);
@@ -45,7 +45,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
     @Override
     public void move() {
-        if (isDead()) {
+        if (isDead) {
             return;
         }
 
@@ -108,7 +108,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
     @Override
     public void eat() {
-        if (isDead()) {
+        if (isDead) {
             return;
         }
 
@@ -141,7 +141,9 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                                 currentSaturation = maxSaturation;
                             }
 
+                            location.removeCreature(targetCreature);
                             targetCreature.setDead(true);
+
                             Logger.getLogger().addDeadCreature(targetCreature);
                         }
                     }
@@ -159,13 +161,10 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
             currentSaturation = currentSaturation - maxSaturation / 4;
 
-//            if (currentSaturation <= 0) {
-//                this.setDead(true);
-//                Logger.getLogger().addDeadCreature(this);
-//            }
-
-            if (isDead) {
+            if (currentSaturation <= 0) {
+                Logger.getLogger().addDeadCreature(this);
                 location.removeCreature(this);
+                this.setDead(true);
             } else {
                 remainingMovement = maxMovement;
             }

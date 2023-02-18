@@ -5,7 +5,6 @@ import main.java.entities.CreatureGenerator;
 import main.java.entities.FoodSystem;
 import main.java.entities.animals.Animal;
 import main.java.loger.Logger;
-import main.java.map.Location;
 import main.java.map.IslandMap;
 
 import java.util.concurrent.ExecutorService;
@@ -29,33 +28,26 @@ public class Simulation {
 
     public void start() {
 
-        int counter = 10;
-
+        int counter = 3;
         while (counter > 0) {
 
-            for (Location[] locations : islandMap.getLocations()) {
-                for (Location location : locations) {
-                    for (int i = 0; i < location.getCreatures().size(); i++) {
-                        Creature creature = location.getCreatures().get(i);
+            for (Creature creature : islandMap.getAllCreature()) {
 
-                        if (creature instanceof Animal) {
-                            ((Animal) creature).move();
-                            ((Animal) creature).eat();
-                        }
-                        creature.reproduce();
-                        if (creature instanceof  Animal) {
-                            ((Animal) creature).sleep();
-                        }
-
-                    }
+                if (creature instanceof Animal) {
+                    ((Animal) creature).move();
+//                       ((Animal) creature).eat();
                 }
+                creature.reproduce();
+                if (creature instanceof Animal) {
+                    ((Animal) creature).sleep();
+                }
+
             }
 
             Logger.getLogger().printStatistic(islandMap);
 
             sleep(3000);
             counter--;
-
         }
 
     }
