@@ -2,43 +2,40 @@ package main.java.entities.plants;
 
 import main.java.entities.Creature;
 import main.java.entities.CreatureGenerator;
-import main.java.map.Cell;
+import main.java.map.Location;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Plant extends Creature {
 
     @Override
-    public void reproduce(Cell cell) {
-        synchronized (cell) {
+    public void reproduce() {
+        synchronized (location) {
 
-            if (cell.thisCreaturesInCell(this) < maxNumberPerCell) {
+            int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
-                if (ThreadLocalRandom.current().nextInt(100) > 25) {
+            if (thisCreaturesInLocation < maxCreaturePerLocation) {
+
+                if (ThreadLocalRandom.current().nextInt(101) > 25) {
                     Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
 
-                    cell.getCreatures().add(newCreature);
-                    System.out.println(newCreature.getId() + " " + newCreature.getImage() + " появился в " + cell.getId());
+                    location.getCreatures().add(newCreature);
 
-                } else {
+                }
 
-                    Cell randomCell = cell.getAdjacentCells().get(ThreadLocalRandom.current().nextInt(cell.getAdjacentCells().size()));
+            } else {
 
-                    if (randomCell.thisCreaturesInCell(this) < maxNumberPerCell) {
+                Location randomAdjacentLocation = location.getAdjacentLocations().get(ThreadLocalRandom.current().nextInt(location.getAdjacentLocations().size()));
 
-                        Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
-                        randomCell.getCreatures().add(newCreature);
-                        System.out.println(newCreature.getId() + " " + newCreature.getImage() + " появился в " + cell.getId());
+                if (randomAdjacentLocation.thisCreaturesInLocation(this) < maxCreaturePerLocation) {
 
-                    }
+                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
+                    randomAdjacentLocation.getCreatures().add(newCreature);
 
                 }
 
             }
-
         }
-
-
     }
 
 }

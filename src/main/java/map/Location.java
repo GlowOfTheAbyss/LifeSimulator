@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Cell {
+public class Location {
 
     private static int idCount = 0;
 
@@ -15,9 +15,9 @@ public class Cell {
 
     private final List<Creature> creatures = new ArrayList<>();
 
-    private final List<Cell> adjacentCells = new ArrayList<>();
+    private final List<Location> adjacentLocations = new ArrayList<>();
 
-    public Cell() {
+    public Location() {
         id = idCount;
         idCount++;
     }
@@ -30,11 +30,11 @@ public class Cell {
         return creatures;
     }
 
-    public List<Cell> getAdjacentCells() {
-        return adjacentCells;
+    public List<Location> getAdjacentLocations() {
+        return adjacentLocations;
     }
 
-    public int thisCreaturesInCell(Creature thisCreature) {
+    public int thisCreaturesInLocation(Creature thisCreature) {
         int result = 0;
         for (Creature creature : this.getCreatures()) {
             if (creature.getName().equals(thisCreature.getName())) {
@@ -44,7 +44,7 @@ public class Cell {
         return result;
     }
 
-    public int foodInTheCell(Creature thisCreature) {
+    public int foodInLocation(Creature thisCreature) {
         int result = 0;
         Map<Creature, Integer> foodMap = FoodSystem.getFoodSystem().getFoodForCreature(thisCreature);
 

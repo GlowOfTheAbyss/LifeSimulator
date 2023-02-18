@@ -1,5 +1,7 @@
 package main.java.entities;
 
+import main.java.map.Location;
+
 public abstract class Creature implements Reproducing {
 
     protected static long idCounter = 0;
@@ -8,7 +10,9 @@ public abstract class Creature implements Reproducing {
     protected String name;
     protected String image;
     protected int weight;
-    protected int maxNumberPerCell;
+    protected int maxCreaturePerLocation;
+
+    protected Location location;
 
     public Creature() {
         this.id = idCounter;
@@ -31,8 +35,16 @@ public abstract class Creature implements Reproducing {
         return weight;
     }
 
-    public int getMaxNumberPerCell() {
-        return maxNumberPerCell;
+    public int getMaxCreaturePerLocation() {
+        return maxCreaturePerLocation;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
 }

@@ -10,7 +10,7 @@ public class Sheep extends Herbivore {
         image = "\uD83D\uDC11";
 
         weight = 70;
-        maxNumberPerCell = 140;
+        maxCreaturePerLocation = 140;
 
         maxMovement = 3;
         remainingMovement = maxMovement;

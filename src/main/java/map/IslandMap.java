@@ -2,48 +2,26 @@ package main.java.map;
 
 public class IslandMap {
 
-    private Cell[][] cells;
+    private Location[][] locations;
 
     public IslandMap() {}
 
     public IslandMap createMap(int length, int height) {
 
-        generateCells(length, height);
-        linkCells();
+        generateLocations(length, height);
+        linkLocations();
         return this;
 
     }
 
-    private void generateCells (int length, int height) {
-        cells = new Cell[length][height];
+    private void generateLocations(int length, int height) {
+        locations = new Location[length][height];
 
-        for (int i = 0; i < cells.length; i++) {
+        for (int i = 0; i < locations.length; i++) {
 
-            for (int i1 = 0; i1 < cells[i].length; i1++) {
+            for (int i1 = 0; i1 < locations[i].length; i1++) {
 
-                cells[i][i1] = new Cell();
-
-            }
-
-        }
-
-    }
-
-    private void linkCells() {
-
-        for (int i = 0; i < cells.length; i++) {
-
-            for (int i1 = 0; i1 < cells[i].length; i1++) {
-
-                if (i1 + 1 < cells[i].length) {
-                    cells[i][i1].getAdjacentCells().add(cells[i][i1 + 1]);
-                    cells[i][i1 + 1].getAdjacentCells().add(cells[i][i1]);
-                }
-
-                if (i + 1 < cells.length) {
-                    cells[i][i1].getAdjacentCells().add(cells[i + 1][i1]);
-                    cells[i + 1][i1].getAdjacentCells().add(cells[i][i1]);
-                }
+                locations[i][i1] = new Location();
 
             }
 
@@ -51,8 +29,30 @@ public class IslandMap {
 
     }
 
-    public Cell[][] getCells() {
-        return cells;
+    private void linkLocations() {
+
+        for (int i = 0; i < locations.length; i++) {
+
+            for (int i1 = 0; i1 < locations[i].length; i1++) {
+
+                if (i1 + 1 < locations[i].length) {
+                    locations[i][i1].getAdjacentLocations().add(locations[i][i1 + 1]);
+                    locations[i][i1 + 1].getAdjacentLocations().add(locations[i][i1]);
+                }
+
+                if (i + 1 < locations.length) {
+                    locations[i][i1].getAdjacentLocations().add(locations[i + 1][i1]);
+                    locations[i + 1][i1].getAdjacentLocations().add(locations[i][i1]);
+                }
+
+            }
+
+        }
+
+    }
+
+    public Location[][] getLocations() {
+        return locations;
     }
 
 }

@@ -3,8 +3,10 @@ package main.java.entities.animals;
 import main.java.entities.Creature;
 import main.java.entities.CreatureGenerator;
 import main.java.entities.FoodSystem;
-import main.java.map.Cell;
+import main.java.map.Location;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -43,126 +45,118 @@ public abstract class Animal extends Creature implements Moving, Eating {
     }
 
     @Override
-    public void reproduce(Cell cell) {
-        synchronized (cell) {
+    public void reproduce() {
+        synchronized (location) {
 
-            if (cell.thisCreaturesInCell(this) >= 2 && cell.thisCreaturesInCell(this) < maxNumberPerCell) {
+            int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
-                if (ThreadLocalRandom.current().nextInt(100) > 25) {
+            if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
 
+                if (ThreadLocalRandom.current().nextInt(101) > 25) {
                     Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
 
-                    cell.getCreatures().add(newCreature);
-                    System.out.println(newCreature.getId() + " " + newCreature.getImage() + " появился в " + cell.getId());
+                    location.getCreatures().add(newCreature);
 
+                }
+            }
+        }
+    }
+
+    @Override
+    public void move() {
+
+        int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
+
+        synchronized (location) {
+
+            if (remainingMovement > 0) {
+
+                if (thisCreaturesInLocation == maxCreaturePerLocation) {
+                    moving();
+                } else if (location.foodInLocation(this) < thisCreaturesInLocation * 2
+                        && ThreadLocalRandom.current().nextInt(101) > 50) {
+                    moving();
+                } else if (ThreadLocalRandom.current().nextInt(101) > 90) {
+                    moving();
                 }
 
             }
 
         }
+
     }
 
-    @Override
-    public void move(Cell cell) {
+    private void moving() {
 
-        int thisCreatureInCell = cell.thisCreaturesInCell(this);
+        Location targetLocation = null;
+        int thisCreaturesInTargetLocation = 0;
+        int foodInTargetLocation = 0;
 
-        if (remainingMovement > 0) {
+        for (Location adjacentLocation : location.getAdjacentLocations()) {
 
-            if (thisCreatureInCell == maxNumberPerCell) {
-
-                moving(cell);
-                remainingMovement--;
-
-            } else if (cell.foodInTheCell(this) < thisCreatureInCell * 2
-                    || ThreadLocalRandom.current().nextInt(100) < 50) {
-
-                moving(cell);
-                remainingMovement--;
-
-            } else if (ThreadLocalRandom.current().nextInt(100) < 10) {
-
-                moving(cell);
-                remainingMovement--;
-
+            if (targetLocation == null) {
+                targetLocation = adjacentLocation;
+                thisCreaturesInTargetLocation = adjacentLocation.thisCreaturesInLocation(this);
+                foodInTargetLocation = adjacentLocation.foodInLocation(this);
+            } else {
+                if (adjacentLocation.thisCreaturesInLocation(this) < thisCreaturesInTargetLocation
+                        || adjacentLocation.foodInLocation(this) > foodInTargetLocation) {
+                    targetLocation = adjacentLocation;
+                }
             }
 
         }
 
+        if (thisCreaturesInTargetLocation == maxCreaturePerLocation) {
+            return;
+        }
+
+        assert targetLocation != null;
+        targetLocation.getCreatures().add(this);
+        location.getCreatures().remove(this);
+        this.location = targetLocation;
+
     }
 
-    private void moving(Cell cell) {
-        Cell targetCell = null;
-        int targetCellThisCreature = 0;
-        int targetCellFood = 0;
+    @Override
+    public void eat() {
 
-        synchronized (cell) {
+        Map<Creature, Integer> foodForCreature = FoodSystem.getFoodSystem().getFoodForCreature(this);
+        List<Creature> food = new ArrayList<>();
 
-            for (Cell adjacentCell : cell.getAdjacentCells()) {
+        synchronized (location) {
 
-                if (targetCell == null) {
-                    targetCell = adjacentCell;
-                    targetCellThisCreature = adjacentCell.thisCreaturesInCell(this);
-                    targetCellFood = cell.foodInTheCell(this);
-                } else {
-                    if (adjacentCell.thisCreaturesInCell(this) < targetCellThisCreature || cell.foodInTheCell(this) > targetCellFood) {
-                        targetCell = adjacentCell;
+            for (Creature creature : location.getCreatures()) {
+                for (Creature foodCreature : foodForCreature.keySet()) {
+                    if (creature.getName().equals(foodCreature.getName())) {
+                        food.add(foodCreature);
                     }
                 }
-
             }
 
-            if (targetCellThisCreature == maxNumberPerCell) {
-                return;
-            }
+            for (int i = 0; i < 3; i++) {
 
-            synchronized (targetCell) {
+                int randomFood = ThreadLocalRandom.current().nextInt(food.size());
+                Creature targetCreature = food.get(randomFood);
 
-                cell.getCreatures().remove(this);
-                targetCell.getCreatures().add(this);
+                for (Creature creature : foodForCreature.keySet()) {
+                    if (creature.getName().equals(targetCreature.getName())) {
+                        int eatChance = foodForCreature.get(creature);
 
-                System.out.println(this.getId() + " " + this.getImage() + " : " + cell.getId() + " -> " + targetCell.getId());
+                        if (eatChance > ThreadLocalRandom.current().nextInt(101)) {
 
-            }
-
-        }
-
-    }
-
-    @Override
-    public void eat(Cell cell) {
-
-        Map<Creature, Integer> foodMap = FoodSystem.getFoodSystem().getFoodForCreature(this);
-
-        for (Creature creature : foodMap.keySet()) {
-            for (int i = 0; i < cell.getCreatures().size(); i++) {
-                Creature cellCreature = cell.getCreatures().get(i);
-
-                if (creature.getName().equals(cellCreature.getName())) {
-
-                    Integer chance = foodMap.get(creature);
-
-                    if (ThreadLocalRandom.current().nextInt(0, 100) < chance) {
-
-                        synchronized (cell) {
-
-                            currentSaturation = currentSaturation + cellCreature.getWeight();
+                            currentSaturation = currentSaturation + targetCreature.getWeight();
                             if (currentSaturation > maxSaturation) {
                                 currentSaturation = maxSaturation;
                             }
 
-                            System.out.println(this.getId() + " " + this.getImage() + " ест " + cellCreature.getId() + " " + cellCreature.getImage());
-
-                            cell.getCreatures().remove(cellCreature);
-
+                            location.getCreatures().remove(targetCreature);
                         }
-
                     }
-
                 }
+
             }
+
         }
-
-
     }
 }

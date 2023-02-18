@@ -3,7 +3,7 @@ package main.java.entities;
 import main.java.entities.animals.herbivore.Sheep;
 import main.java.entities.animals.predators.Wolf;
 import main.java.entities.plants.Grass;
-import main.java.map.Cell;
+import main.java.map.Location;
 import main.java.map.IslandMap;
 
 import java.lang.reflect.Constructor;
@@ -24,9 +24,9 @@ public class CreatureGenerator {
 
     public void islandMapFillCreature(IslandMap islandMap) {
 
-        for (Cell[] cells : islandMap.getCells()) {
+        for (Location[] cells : islandMap.getLocations()) {
 
-            for (Cell cell : cells) {
+            for (Location cell : cells) {
 
                 cellFillCreature(cell);
 
@@ -36,15 +36,18 @@ public class CreatureGenerator {
 
     }
 
-    private void cellFillCreature(Cell cell) {
+    private void cellFillCreature(Location cell) {
 
         for (Creature creature : creatures) {
 
-            int numberOfCreatures = new Random().nextInt(creature.getMaxNumberPerCell() / 2);
+            int numberOfCreatures = new Random().nextInt(creature.getMaxCreaturePerLocation() / 2);
 
             for (int i = 0; i < numberOfCreatures; i++) {
 
-                cell.getCreatures().add(getNewCreature(creature));
+                Creature newCreature = getNewCreature(creature);
+                newCreature.setLocation(cell);
+
+                cell.getCreatures().add(newCreature);
 
             }
 

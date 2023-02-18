@@ -10,7 +10,7 @@ public class Wolf extends Predator {
         image = "\uD83D\uDC3A";
 
         weight = 50;
-        maxNumberPerCell = 30;
+        maxCreaturePerLocation = 30;
 
         maxMovement = 3;
         remainingMovement = maxMovement;
