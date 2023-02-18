@@ -10,7 +10,7 @@ public class Grass extends Plant {
         image = "\uD83C\uDF3F";
 
         weight = 1;
-        maxCreaturePerLocation = 200;
+        maxCreaturePerLocation = 1000;
 
     }
 

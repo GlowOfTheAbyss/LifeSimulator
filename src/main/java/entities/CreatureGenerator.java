@@ -1,7 +1,7 @@
 package main.java.entities;
 
-import main.java.entities.animals.herbivore.Sheep;
-import main.java.entities.animals.predators.Wolf;
+import main.java.entities.animals.herbivore.*;
+import main.java.entities.animals.predators.*;
 import main.java.entities.plants.Grass;
 import main.java.map.Location;
 import main.java.map.IslandMap;
@@ -17,9 +17,24 @@ public class CreatureGenerator {
     private final List<Creature> creatures = new ArrayList<>();
 
     private CreatureGenerator() {
-        creatures.add(new Grass());
-        creatures.add(new Wolf());
+        creatures.add(new Buffalo());
+        creatures.add(new Caterpillar());
+        creatures.add(new Deer());
+        creatures.add(new Goat());
+        creatures.add(new Horse());
+        creatures.add(new Rabbit());
         creatures.add(new Sheep());
+
+        creatures.add(new Bear());
+        creatures.add(new Boa());
+        creatures.add(new Boar());
+        creatures.add(new Duck());
+        creatures.add(new Eagle());
+        creatures.add(new Fox());
+        creatures.add(new Mouse());
+        creatures.add(new Wolf());
+
+        creatures.add(new Grass());
     }
 
     public void islandMapFillCreature(IslandMap islandMap) {

@@ -3,6 +3,7 @@ package main.java.entities.animals;
 import main.java.entities.Creature;
 import main.java.entities.CreatureGenerator;
 import main.java.entities.FoodSystem;
+import main.java.loger.Logger;
 import main.java.map.Location;
 
 import java.util.ArrayList;
@@ -10,42 +11,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class Animal extends Creature implements Moving, Eating {
+public abstract class Animal extends Creature implements Moving, Eating, Sleeping {
 
     protected int maxMovement;
 
     protected int remainingMovement;
 
-    protected int maxSaturation;
+    protected double maxSaturation;
 
-    protected int currentSaturation;
-
-    public int getMaxMovement() {
-        return maxMovement;
-    }
-
-    public int getRemainingMovement() {
-        return remainingMovement;
-    }
-
-    public void setRemainingMovement(int remainingMovement) {
-        this.remainingMovement = remainingMovement;
-    }
-
-    public int getMaxSaturation() {
-        return maxSaturation;
-    }
-
-    public int getCurrentSaturation() {
-        return currentSaturation;
-    }
-
-    public void setCurrentSaturation(int currentSaturation) {
-        this.currentSaturation = currentSaturation;
-    }
+    protected double currentSaturation;
 
     @Override
     public void reproduce() {
+        if (isDead()) {
+            return;
+        }
+
         synchronized (location) {
 
             int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
@@ -55,8 +36,8 @@ public abstract class Animal extends Creature implements Moving, Eating {
                 if (ThreadLocalRandom.current().nextInt(101) > 25) {
                     Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this);
 
-                    location.getCreatures().add(newCreature);
-
+                    location.addCreature(newCreature);
+                    Logger.getLogger().addNewCreature(newCreature);
                 }
             }
         }
@@ -64,12 +45,15 @@ public abstract class Animal extends Creature implements Moving, Eating {
 
     @Override
     public void move() {
+        if (isDead()) {
+            return;
+        }
 
         int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
         synchronized (location) {
 
-            if (remainingMovement > 0) {
+            while (remainingMovement > 0) {
 
                 if (thisCreaturesInLocation == maxCreaturePerLocation) {
                     moving();
@@ -78,6 +62,9 @@ public abstract class Animal extends Creature implements Moving, Eating {
                     moving();
                 } else if (ThreadLocalRandom.current().nextInt(101) > 90) {
                     moving();
+                } else {
+                    remainingMovement = 0;
+                    break;
                 }
 
             }
@@ -112,14 +99,18 @@ public abstract class Animal extends Creature implements Moving, Eating {
         }
 
         assert targetLocation != null;
-        targetLocation.getCreatures().add(this);
-        location.getCreatures().remove(this);
+        targetLocation.addCreature(this);
+        location.removeCreature(this);
         this.location = targetLocation;
+        remainingMovement--;
 
     }
 
     @Override
     public void eat() {
+        if (isDead()) {
+            return;
+        }
 
         Map<Creature, Integer> foodForCreature = FoodSystem.getFoodSystem().getFoodForCreature(this);
         List<Creature> food = new ArrayList<>();
@@ -129,7 +120,7 @@ public abstract class Animal extends Creature implements Moving, Eating {
             for (Creature creature : location.getCreatures()) {
                 for (Creature foodCreature : foodForCreature.keySet()) {
                     if (creature.getName().equals(foodCreature.getName())) {
-                        food.add(foodCreature);
+                        food.add(creature);
                     }
                 }
             }
@@ -150,7 +141,8 @@ public abstract class Animal extends Creature implements Moving, Eating {
                                 currentSaturation = maxSaturation;
                             }
 
-                            location.getCreatures().remove(targetCreature);
+                            targetCreature.setDead(true);
+                            Logger.getLogger().addDeadCreature(targetCreature);
                         }
                     }
                 }
@@ -159,4 +151,27 @@ public abstract class Animal extends Creature implements Moving, Eating {
 
         }
     }
+
+    @Override
+    public void sleep() {
+
+        synchronized (location) {
+
+            currentSaturation = currentSaturation - maxSaturation / 4;
+
+//            if (currentSaturation <= 0) {
+//                this.setDead(true);
+//                Logger.getLogger().addDeadCreature(this);
+//            }
+
+            if (isDead) {
+                location.removeCreature(this);
+            } else {
+                remainingMovement = maxMovement;
+            }
+
+        }
+
+    }
+
 }

@@ -6,17 +6,28 @@ public abstract class Creature implements Reproducing {
 
     protected static long idCounter = 0;
 
+    protected boolean isDead;
+
     protected long id;
     protected String name;
     protected String image;
-    protected int weight;
+    protected double weight;
     protected int maxCreaturePerLocation;
 
     protected Location location;
 
     public Creature() {
+        isDead = false;
         this.id = idCounter;
         idCounter++;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
     }
 
     public long getId() {
@@ -31,16 +42,12 @@ public abstract class Creature implements Reproducing {
         return image;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
     public int getMaxCreaturePerLocation() {
         return maxCreaturePerLocation;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     public void setLocation(Location location) {

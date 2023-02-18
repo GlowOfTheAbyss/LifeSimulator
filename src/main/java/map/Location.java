@@ -22,12 +22,16 @@ public class Location {
         idCount++;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public List<Creature> getCreatures() {
         return creatures;
+    }
+
+    public void removeCreature(Creature creature) {
+        creatures.remove(creature);
+    }
+
+    public void addCreature(Creature creature) {
+        creatures.add(creature);
     }
 
     public List<Location> getAdjacentLocations() {
