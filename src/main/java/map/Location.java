@@ -22,6 +22,10 @@ public class Location {
         idCount++;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public List<Creature> getCreatures() {
         return creatures;
     }
@@ -38,7 +42,7 @@ public class Location {
         return adjacentLocations;
     }
 
-    public synchronized int thisCreaturesInLocation(Creature thisCreature) {
+    public int thisCreaturesInLocation(Creature thisCreature) {
         int result = 0;
         for (Creature creature : this.getCreatures()) {
             if (creature.getName().equals(thisCreature.getName())) {
@@ -52,12 +56,13 @@ public class Location {
         int result = 0;
         Map<Creature, Integer> foodMap = FoodSystem.getFoodSystem().getFoodForCreature(thisCreature);
 
-        for (Creature creature : this.getCreatures()) {
-            if (foodMap.containsKey(creature)) {
-                result++;
+        for (Creature creature : foodMap.keySet()) {
+            for (Creature locationCriture : creatures) {
+                if (creature.getName().equals(locationCriture.getName())) {
+                    result++;
+                }
             }
         }
-
         return result;
     }
 

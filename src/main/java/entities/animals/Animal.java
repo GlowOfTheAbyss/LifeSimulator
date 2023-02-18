@@ -38,6 +38,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
                     location.addCreature(newCreature);
                     Logger.getLogger().addNewCreature(newCreature);
+                    System.out.println(image + " " + id + " родил " + newCreature.getImage() + " " + newCreature.getId());
                 }
             }
         }
@@ -100,6 +101,9 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
         assert targetLocation != null;
         targetLocation.addCreature(this);
+
+        System.out.println(image + " " + id + " " + location.getId() + " -> " + targetLocation.getId());
+
         location.removeCreature(this);
         this.location = targetLocation;
         remainingMovement--;
@@ -126,7 +130,6 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             }
 
             if (potentialTarget.isEmpty()) {
-                return;
             } else {
 
                 int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
@@ -150,6 +153,8 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                     location.removeCreature(targetCreature);
                     targetCreature.setDead(true);
 
+                    System.out.println(image + " " + id + " съел " + targetCreature.getImage() + " " + targetCreature.getId());
+
                 }
 
             }
@@ -166,8 +171,8 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
             if (currentSaturation <= 0) {
                 Logger.getLogger().addDeadCreature(this);
-                location.removeCreature(this);
                 this.setDead(true);
+                location.removeCreature(this);
             } else {
                 remainingMovement = maxMovement;
             }
