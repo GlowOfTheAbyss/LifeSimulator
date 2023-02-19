@@ -173,6 +173,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                 Logger.getLogger().addDeadCreature(this);
                 this.setDead(true);
                 location.removeCreature(this);
+                System.out.println(getImage() + " " + getId() + " умер от голода");
             } else {
                 remainingMovement = maxMovement;
             }

@@ -57,8 +57,8 @@ public class Location {
         Map<Creature, Integer> foodMap = FoodSystem.getFoodSystem().getFoodForCreature(thisCreature);
 
         for (Creature creature : foodMap.keySet()) {
-            for (Creature locationCriture : creatures) {
-                if (creature.getName().equals(locationCriture.getName())) {
+            for (Creature locationCreature : creatures) {
+                if (creature.getName().equals(locationCreature.getName())) {
                     result++;
                 }
             }

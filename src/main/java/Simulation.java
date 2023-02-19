@@ -17,8 +17,8 @@ public class Simulation {
 
     public Simulation() {
 
-        int length = 2;
-        int height = 2;
+        int length = 5;
+        int height = 5;
 
         islandMap = new IslandMap().createMap(length, height);
         CreatureGenerator.getCreatureGenerator().islandMapFillCreature(islandMap);
