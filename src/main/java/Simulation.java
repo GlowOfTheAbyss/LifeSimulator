@@ -16,6 +16,12 @@ public class Simulation {
 
     private final IslandMap islandMap;
 
+    ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
+        Thread thread = new Thread();
+        thread.setDaemon(true);
+        return thread;
+    });
+
     public Simulation() {
 
         int length = 5;
@@ -30,12 +36,6 @@ public class Simulation {
 
     public void start() {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            return thread;
-        });
-
         while (endCheck()) {
 
             for (Creature creature : islandMap.getAllCreature()) {
@@ -44,11 +44,14 @@ public class Simulation {
                     ((Animal) creature).move();
                     ((Animal) creature).eat();
                 }
-                creature.reproduce();
+
+            }
+
+            for (Creature creature : islandMap.getAllCreature()) {
+                executorService.submit(creature::reproduce);
                 if (creature instanceof Animal) {
                     ((Animal) creature).sleep();
                 }
-
             }
 
             Logger.getLogger().printStatistic(islandMap);
@@ -58,6 +61,8 @@ public class Simulation {
         }
 
     }
+
+
     
     private boolean endCheck() {
         int alivePredator = 0;

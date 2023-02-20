@@ -33,7 +33,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
             if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
 
-                if (ThreadLocalRandom.current().nextInt(101) > 25) {
+                if (ThreadLocalRandom.current().nextInt(101) > 75) {
                     Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
 
                     location.addCreature(newCreature);
@@ -41,7 +41,9 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                     System.out.println(image + " " + id + " MAKE " + newCreature.getImage() + " " + newCreature.getId());
                 }
             }
+
         }
+
     }
 
     @Override
@@ -52,22 +54,18 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
         int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
-        synchronized (location) {
+        while (remainingMovement > 0) {
 
-            while (remainingMovement > 0) {
-
-                if (thisCreaturesInLocation == maxCreaturePerLocation) {
-                    moving();
-                } else if (location.foodInLocation(this) < thisCreaturesInLocation * 2
-                        && ThreadLocalRandom.current().nextInt(101) > 50) {
-                    moving();
-                } else if (ThreadLocalRandom.current().nextInt(101) > 90) {
-                    moving();
-                } else {
-                    remainingMovement = 0;
-                    break;
-                }
-
+            if (thisCreaturesInLocation == maxCreaturePerLocation) {
+                moving();
+            } else if (location.foodInLocation(this) < thisCreaturesInLocation * 2
+                    && ThreadLocalRandom.current().nextInt(101) > 50) {
+                moving();
+            } else if (ThreadLocalRandom.current().nextInt(101) > 90) {
+                moving();
+            } else {
+                remainingMovement = 0;
+                break;
             }
 
         }
@@ -119,47 +117,44 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
         Map<Creature, Integer> foodForCreature = FoodSystem.getFoodSystem().getFoodForCreature(this);
         List<Creature> potentialTarget = new ArrayList<>();
 
-        synchronized (location) {
+        for (Creature creature : location.getCreatures()) {
+            for (Creature foodFromCreature : foodForCreature.keySet()) {
+                if (creature.getName().equals(foodFromCreature.getName())) {
+                    potentialTarget.add(creature);
+                }
+            }
+        }
 
-            for (Creature creature : location.getCreatures()) {
-                for (Creature foodFromCreature : foodForCreature.keySet()) {
-                    if (creature.getName().equals(foodFromCreature.getName())) {
-                        potentialTarget.add(creature);
-                    }
+        if (potentialTarget.isEmpty()) {
+        } else {
+
+            int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
+            Creature targetCreature = potentialTarget.get(randomTarget);
+            int killChance = 0;
+
+            for (Creature creature : foodForCreature.keySet()) {
+                if (creature.getName().equals(targetCreature.getName())) {
+                    killChance = foodForCreature.get(creature);
                 }
             }
 
-            if (potentialTarget.isEmpty()) {
-            } else {
+            if (ThreadLocalRandom.current().nextInt(101) < killChance) {
 
-                int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
-                Creature targetCreature = potentialTarget.get(randomTarget);
-                int killChance = 0;
-
-                for (Creature creature : foodForCreature.keySet()) {
-                    if (creature.getName().equals(targetCreature.getName())) {
-                        killChance = foodForCreature.get(creature);
-                    }
+                currentSaturation = currentSaturation + targetCreature.getWeight();
+                if (currentSaturation > maxSaturation) {
+                    currentSaturation = maxSaturation;
                 }
 
-                if (ThreadLocalRandom.current().nextInt(101) < killChance) {
+                Logger.getLogger().addDeadCreature(targetCreature);
+                location.removeCreature(targetCreature);
+                targetCreature.setDead(true);
 
-                    currentSaturation = currentSaturation + targetCreature.getWeight();
-                    if (currentSaturation > maxSaturation) {
-                        currentSaturation = maxSaturation;
-                    }
-
-                    Logger.getLogger().addDeadCreature(targetCreature);
-                    location.removeCreature(targetCreature);
-                    targetCreature.setDead(true);
-
-                    System.out.println(image + " " + id + " EAT " + targetCreature.getImage() + " " + targetCreature.getId());
-
-                }
+                System.out.println(image + " " + id + " EAT " + targetCreature.getImage() + " " + targetCreature.getId());
 
             }
 
         }
+
     }
 
     @Override
