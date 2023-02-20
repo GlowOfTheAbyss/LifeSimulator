@@ -12,7 +12,7 @@ public class FileLoader {
 
     private static final FileLoader fileLoader = new FileLoader();
 
-    private Path path = Path.of("src/main/resources/foodTable.xlsx");
+    private final Path path = Path.of("src/main/resources/foodTable.xlsx");
 
     private FileLoader() {}
 
