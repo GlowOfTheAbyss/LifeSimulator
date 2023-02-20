@@ -27,22 +27,18 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             return;
         }
 
-        synchronized (location) {
+        int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
 
-            int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
+        if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
 
-            if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
+            if (ThreadLocalRandom.current().nextInt(101) > 75) {
+                Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
 
-                if (ThreadLocalRandom.current().nextInt(101) > 75) {
-                    Creature newCreature = CreatureGenerator.getCreatureGenerator().getNewCreature(this, location);
-
-                    location.addCreature(newCreature);
-                    Logger.getLogger().addNewCreature(newCreature);
-                    System.out.println(image + " " + id + " MAKE " + newCreature.getImage() + " " + newCreature.getId());
-                }
+                location.addCreature(newCreature);
+                Logger.getLogger().addNewCreature(newCreature);
             }
-
         }
+
 
     }
 
@@ -100,8 +96,6 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
         assert targetLocation != null;
         targetLocation.addCreature(this);
 
-        System.out.println(image + " " + id + " " + location.getId() + " -> " + targetLocation.getId());
-
         location.removeCreature(this);
         this.location = targetLocation;
         remainingMovement--;
@@ -149,8 +143,6 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                 location.removeCreature(targetCreature);
                 targetCreature.setDead(true);
 
-                System.out.println(image + " " + id + " EAT " + targetCreature.getImage() + " " + targetCreature.getId());
-
             }
 
         }
@@ -160,20 +152,16 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
     @Override
     public void sleep() {
 
-        synchronized (location) {
+        currentSaturation = currentSaturation - maxSaturation / 4;
 
-            currentSaturation = currentSaturation - maxSaturation / 4;
-
-            if (currentSaturation <= 0) {
-                Logger.getLogger().addDeadCreature(this);
-                this.setDead(true);
-                location.removeCreature(this);
-                System.out.println(getImage() + " " + getId() + " DEAD_OF_EXHAUSTION");
-            } else {
-                remainingMovement = maxMovement;
-            }
-
+        if (currentSaturation <= 0) {
+            Logger.getLogger().addDeadCreature(this);
+            this.setDead(true);
+            location.removeCreature(this);
+        } else {
+            remainingMovement = maxMovement;
         }
+
 
     }
 

@@ -16,7 +16,7 @@ public class Simulation {
 
     private final IslandMap islandMap;
 
-    ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
+    ExecutorService service = Executors.newFixedThreadPool(6, r -> {
         Thread thread = new Thread();
         thread.setDaemon(true);
         return thread;
@@ -40,18 +40,19 @@ public class Simulation {
 
             for (Creature creature : islandMap.getAllCreature()) {
 
-                if (creature instanceof Animal) {
+                boolean isAnimal = creature instanceof Animal;
+
+                if (isAnimal) {
                     ((Animal) creature).move();
                     ((Animal) creature).eat();
                 }
 
-            }
+                service.submit(creature::reproduce);
 
-            for (Creature creature : islandMap.getAllCreature()) {
-                executorService.submit(creature::reproduce);
-                if (creature instanceof Animal) {
+                if (isAnimal) {
                     ((Animal) creature).sleep();
                 }
+
             }
 
             Logger.getLogger().printStatistic(islandMap);
