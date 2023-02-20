@@ -4,12 +4,13 @@ import main.java.entities.Creature;
 import main.java.entities.CreatureGenerator;
 import main.java.entities.FoodSystem;
 import main.java.entities.animals.Animal;
+import main.java.entities.animals.herbivore.Herbivore;
+import main.java.entities.animals.predators.Predator;
 import main.java.loger.Logger;
 import main.java.map.IslandMap;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class Simulation {
 
@@ -35,9 +36,7 @@ public class Simulation {
             return thread;
         });
 
-        int temp = 5;
-
-        while (temp > 0) {
+        while (endCheck()) {
 
             for (Creature creature : islandMap.getAllCreature()) {
 
@@ -55,10 +54,35 @@ public class Simulation {
             Logger.getLogger().printStatistic(islandMap);
 
             sleep(3000);
-            temp--;
 
         }
 
+    }
+    
+    private boolean endCheck() {
+        int alivePredator = 0;
+
+        for (Creature creature : islandMap.getAllCreature()) {
+            
+            if (creature instanceof Herbivore) {
+                System.out.println("----SIMULATION_END");
+                System.out.println("ALL_HERBIVORE_DIED");
+                return true;
+            }
+            
+            if (creature instanceof Predator) {
+                alivePredator++;
+            }
+            
+            if (alivePredator > 10) {
+                System.out.println("----SIMULATION_END");
+                System.out.println("<10_PREDATORS_LEFT");
+                return true;
+            }
+            
+        }
+
+        return false;
     }
 
     private void sleep(int millis) {

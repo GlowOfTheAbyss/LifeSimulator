@@ -61,7 +61,7 @@ public class Logger {
             System.out.println();
         }
         System.out.println("----STATS");
-        System.out.println("Всего:");
+        System.out.println("ALL_CREATURE:");
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             int number = 0;
             for (Location[] locations : map.getLocations()) {
@@ -73,14 +73,14 @@ public class Logger {
         }
         System.out.println();
 
-        System.out.println("Умерло:");
+        System.out.println("DEAD_CREATURE:");
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             System.out.print(creature.getImage() + " : " + findNumberCreaturePerList(creature, getDeadCreature()) + " ");
         }
         clearDeadCreature();
         System.out.println();
 
-        System.out.println("Родилось:");
+        System.out.println("NEW_CREATURE:");
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             System.out.print(creature.getImage() + " : " + findNumberCreaturePerList(creature, getNewCreature()) + " ");
         }
