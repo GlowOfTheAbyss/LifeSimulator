@@ -38,7 +38,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
                     location.addCreature(newCreature);
                     Logger.getLogger().addNewCreature(newCreature);
-                    System.out.println(image + " " + id + " родил " + newCreature.getImage() + " " + newCreature.getId());
+                    System.out.println(image + " " + id + " MAKE " + newCreature.getImage() + " " + newCreature.getId());
                 }
             }
         }
@@ -153,7 +153,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                     location.removeCreature(targetCreature);
                     targetCreature.setDead(true);
 
-                    System.out.println(image + " " + id + " съел " + targetCreature.getImage() + " " + targetCreature.getId());
+                    System.out.println(image + " " + id + " EAT " + targetCreature.getImage() + " " + targetCreature.getId());
 
                 }
 
@@ -173,7 +173,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                 Logger.getLogger().addDeadCreature(this);
                 this.setDead(true);
                 location.removeCreature(this);
-                System.out.println(getImage() + " " + getId() + " умер от голода");
+                System.out.println(getImage() + " " + getId() + " DEAD_OF_EXHAUSTION");
             } else {
                 remainingMovement = maxMovement;
             }
