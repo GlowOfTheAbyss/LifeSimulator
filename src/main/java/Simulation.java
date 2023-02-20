@@ -65,8 +65,6 @@ public class Simulation {
         for (Creature creature : islandMap.getAllCreature()) {
             
             if (creature instanceof Herbivore) {
-                System.out.println("----SIMULATION_END");
-                System.out.println("ALL_HERBIVORE_DIED");
                 return true;
             }
             
@@ -75,13 +73,12 @@ public class Simulation {
             }
             
             if (alivePredator > 10) {
-                System.out.println("----SIMULATION_END");
-                System.out.println("<10_PREDATORS_LEFT");
                 return true;
             }
             
         }
 
+        System.out.println("----SIMULATION_END");
         return false;
     }
 
