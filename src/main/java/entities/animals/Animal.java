@@ -109,9 +109,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             }
         }
 
-        if (potentialTarget.isEmpty()) {
-        } else {
-
+        if (!potentialTarget.isEmpty()) {
             for (int i = 0; i < 2; i++) {
 
                 int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
@@ -138,7 +136,6 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
                 }
 
             }
-
         }
 
     }

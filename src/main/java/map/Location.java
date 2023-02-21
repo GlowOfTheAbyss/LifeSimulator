@@ -9,22 +9,11 @@ import java.util.Map;
 
 public class Location {
 
-    private static int idCount = 0;
-
-    private final int id;
-
     private final List<Creature> creatures = new ArrayList<>();
 
     private final List<Location> adjacentLocations = new ArrayList<>();
 
-    public Location() {
-        id = idCount;
-        idCount++;
-    }
-
-    public int getId() {
-        return id;
-    }
+    public Location() {}
 
     public List<Creature> getCreatures() {
         return creatures;
