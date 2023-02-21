@@ -45,6 +45,21 @@ public class Logger {
     public void printStatistic(IslandMap map) {
 
         System.out.println("----STEP : " + counter);
+
+        printMap(map);
+        printStats(map);
+        clearDeadCreature();
+        clearNewCreature();
+
+        System.out.println("----");
+        System.out.println();
+
+        counter++;
+
+    }
+
+    public void printMap(IslandMap map) {
+
         System.out.println("----MAP");
 
         for (Location[] locations : map.getLocations()) {
@@ -60,6 +75,11 @@ public class Logger {
             }
             System.out.println();
         }
+
+    }
+
+    public void printStats(IslandMap map) {
+
         System.out.println("----STATS");
         System.out.println("ALL_CREATURE:");
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
@@ -77,19 +97,13 @@ public class Logger {
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             System.out.print(creature.getImage() + " : " + findNumberCreaturePerList(creature, getDeadCreature()) + " ");
         }
-        clearDeadCreature();
         System.out.println();
 
         System.out.println("NEW_CREATURE:");
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             System.out.print(creature.getImage() + " : " + findNumberCreaturePerList(creature, getNewCreature()) + " ");
         }
-        clearNewCreature();
         System.out.println();
-
-        System.out.println("----");
-        System.out.println();
-        counter++;
 
     }
 

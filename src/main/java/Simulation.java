@@ -6,28 +6,21 @@ import main.java.entities.FoodSystem;
 import main.java.entities.animals.Animal;
 import main.java.entities.animals.herbivore.Herbivore;
 import main.java.entities.animals.predators.Predator;
+import main.java.fileManager.FileLoader;
 import main.java.loger.Logger;
 import main.java.map.IslandMap;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import main.java.settings.Setting;
 
 public class Simulation {
 
     private final IslandMap islandMap;
-
-    private final ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
-        Thread thread = new Thread();
-        thread.setDaemon(true);
-        return thread;
-    });
+    private final Setting setting;
 
     public Simulation() {
 
-        int length = 5;
-        int height = 5;
+        setting = FileLoader.getFileLoader().loadSettingFile();
 
-        islandMap = new IslandMap().createMap(length, height);
+        islandMap = new IslandMap().createMap(setting.getLength(), setting.getHeight());
         CreatureGenerator.getCreatureGenerator().islandMapFillCreature(islandMap);
 
         FoodSystem.getFoodSystem().generateFoodSystem();
@@ -35,6 +28,9 @@ public class Simulation {
     }
 
     public void start() {
+
+        Logger.getLogger().printMap(islandMap);
+        int stepCounter = 0;
 
         while (endCheck()) {
 
@@ -53,10 +49,14 @@ public class Simulation {
                     ((Animal) creature).sleep();
                 }
             }
-            sleep(1000);
-            Logger.getLogger().printStatistic(islandMap);
 
-            sleep(3000);
+            if (stepCounter == setting.getCyclesBetweenPrintStatistics()) {
+                Logger.getLogger().printStatistic(islandMap);
+                stepCounter = 0;
+            }
+
+            sleep(setting.getSleepTime() * 1000);
+            stepCounter++;
 
         }
 
@@ -88,11 +88,11 @@ public class Simulation {
 
         }
 
-        if (currentHerbivore <= (maxHerbivore * (0.1 / 100))) {
+        if (currentHerbivore <= (maxHerbivore * (setting.getHerbivoreExitPercent() / 100))) {
             System.out.println("----SIMULATION_END");
             System.out.println("----HERBIVORE<0.1%");
             return false;
-        } else if (currentPredators <= (maxPredators * (1.0 / 100))) {
+        } else if (currentPredators <= (maxPredators * (setting.getPredatorExitPercent() / 100))) {
             System.out.println("----SIMULATION_END");
             System.out.println("----PREDATORS<1%");
             return false;
