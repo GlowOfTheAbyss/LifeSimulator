@@ -27,7 +27,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             return;
         }
 
-        int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
+        int thisCreaturesInLocation = location.creaturesInLocation(this);
 
         if (thisCreaturesInLocation >= 2 && thisCreaturesInLocation < maxCreaturePerLocation) {
 
@@ -48,7 +48,7 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             return;
         }
 
-        int thisCreaturesInLocation = location.thisCreaturesInLocation(this);
+        int thisCreaturesInLocation = location.creaturesInLocation(this);
 
         while (remainingMovement > 0) {
 
@@ -70,31 +70,18 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
 
     private void moving() {
 
-        Location targetLocation = null;
-        int thisCreaturesInTargetLocation = 0;
-        int foodInTargetLocation = 0;
+        Location targetLocation = location;
+        int thisCreaturesInTargetLocation = location.creaturesInLocation(this);
+        int foodInTargetLocation = location.foodInLocation(this);
 
         for (Location adjacentLocation : location.getAdjacentLocations()) {
 
-            if (targetLocation == null) {
+            if (thisCreaturesInTargetLocation < maxCreaturePerLocation
+                    || adjacentLocation.creaturesInLocation(this) < thisCreaturesInTargetLocation
+                    || adjacentLocation.foodInLocation(this) > foodInTargetLocation) {
                 targetLocation = adjacentLocation;
-                thisCreaturesInTargetLocation = adjacentLocation.thisCreaturesInLocation(this);
-                foodInTargetLocation = adjacentLocation.foodInLocation(this);
-            } else {
-                if (adjacentLocation.thisCreaturesInLocation(this) < thisCreaturesInTargetLocation
-                        || adjacentLocation.foodInLocation(this) > foodInTargetLocation) {
-                    targetLocation = adjacentLocation;
-                }
             }
 
-        }
-
-        if (thisCreaturesInTargetLocation == maxCreaturePerLocation) {
-            return;
-        }
-
-        if (targetLocation == null) {
-            return;
         }
 
         targetLocation.addCreature(this);
@@ -125,26 +112,30 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
         if (potentialTarget.isEmpty()) {
         } else {
 
-            int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
-            Creature targetCreature = potentialTarget.get(randomTarget);
-            int killChance = 0;
+            for (int i = 0; i < 2; i++) {
 
-            for (Creature creature : foodForCreature.keySet()) {
-                if (creature.getName().equals(targetCreature.getName())) {
-                    killChance = foodForCreature.get(creature);
-                }
-            }
+                int randomTarget = ThreadLocalRandom.current().nextInt(potentialTarget.size());
+                Creature targetCreature = potentialTarget.get(randomTarget);
+                int killChance = 0;
 
-            if (ThreadLocalRandom.current().nextInt(101) < killChance) {
-
-                currentSaturation = currentSaturation + targetCreature.getWeight();
-                if (currentSaturation > maxSaturation) {
-                    currentSaturation = maxSaturation;
+                for (Creature creature : foodForCreature.keySet()) {
+                    if (creature.getName().equals(targetCreature.getName())) {
+                        killChance = foodForCreature.get(creature);
+                    }
                 }
 
-                Logger.getLogger().addDeadCreature(targetCreature);
-                location.removeCreature(targetCreature);
-                targetCreature.setDead(true);
+                if (ThreadLocalRandom.current().nextInt(101) < killChance) {
+
+                    currentSaturation = currentSaturation + targetCreature.getWeight();
+                    if (currentSaturation > maxSaturation) {
+                        currentSaturation = maxSaturation;
+                    }
+
+                    Logger.getLogger().addDeadCreature(targetCreature);
+                    location.removeCreature(targetCreature);
+                    targetCreature.setDead(true);
+
+                }
 
             }
 

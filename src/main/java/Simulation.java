@@ -29,7 +29,11 @@ public class Simulation {
 
     public void start() {
 
+        System.out.println("----SIMULATION_START");
+        System.out.println("----GENERATE_MAP");
+
         Logger.getLogger().printMap(islandMap);
+
         int stepCounter = 0;
 
         while (endCheck()) {
@@ -90,11 +94,11 @@ public class Simulation {
 
         if (currentHerbivore <= (maxHerbivore * (setting.getHerbivoreExitPercent() / 100))) {
             System.out.println("----SIMULATION_END");
-            System.out.println("----HERBIVORE<0.1%");
+            System.out.println("----HERBIVORE<" + setting.getHerbivoreExitPercent());
             return false;
         } else if (currentPredators <= (maxPredators * (setting.getPredatorExitPercent() / 100))) {
             System.out.println("----SIMULATION_END");
-            System.out.println("----PREDATORS<1%");
+            System.out.println("----PREDATORS<" + setting.getPredatorExitPercent());
             return false;
         }
 

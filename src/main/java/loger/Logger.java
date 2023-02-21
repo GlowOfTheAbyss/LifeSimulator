@@ -121,7 +121,7 @@ public class Logger {
 
         Map<Creature, Integer> creatureInLocation = new HashMap<>();
         for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
-            int thisCreaturesInLocation = location.thisCreaturesInLocation(creature);
+            int thisCreaturesInLocation = location.creaturesInLocation(creature);
             creatureInLocation.put(creature, thisCreaturesInLocation);
         }
 
