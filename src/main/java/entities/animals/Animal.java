@@ -93,7 +93,10 @@ public abstract class Animal extends Creature implements Moving, Eating, Sleepin
             return;
         }
 
-        assert targetLocation != null;
+        if (targetLocation == null) {
+            return;
+        }
+
         targetLocation.addCreature(this);
 
         location.removeCreature(this);

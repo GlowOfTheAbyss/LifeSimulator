@@ -16,7 +16,7 @@ public class Simulation {
 
     private final IslandMap islandMap;
 
-    ExecutorService service = Executors.newFixedThreadPool(6, r -> {
+    private final ExecutorService executorService = Executors.newFixedThreadPool(6, r -> {
         Thread thread = new Thread();
         thread.setDaemon(true);
         return thread;
@@ -47,14 +47,13 @@ public class Simulation {
                     ((Animal) creature).eat();
                 }
 
-                service.submit(creature::reproduce);
+                creature.reproduce();
 
                 if (isAnimal) {
                     ((Animal) creature).sleep();
                 }
-
             }
-
+            sleep(1000);
             Logger.getLogger().printStatistic(islandMap);
 
             sleep(3000);
@@ -62,30 +61,44 @@ public class Simulation {
         }
 
     }
-
-
     
     private boolean endCheck() {
-        int alivePredator = 0;
 
-        for (Creature creature : islandMap.getAllCreature()) {
-            
+        int maxHerbivore = 0;
+        int maxPredators = 0;
+
+        for (Creature creature : CreatureGenerator.getCreatureGenerator().getCreatures()) {
             if (creature instanceof Herbivore) {
-                return true;
+                maxHerbivore = maxHerbivore + (creature.getMaxCreaturePerLocation() * islandMap.getSize());
+            } else if (creature instanceof Predator) {
+                maxPredators = maxPredators + (creature.getMaxCreaturePerLocation() * islandMap.getSize());
             }
-            
-            if (creature instanceof Predator) {
-                alivePredator++;
-            }
-            
-            if (alivePredator > 10) {
-                return true;
-            }
-            
         }
 
-        System.out.println("----SIMULATION_END");
-        return false;
+        int currentHerbivore = 0;
+        int currentPredators = 0;
+
+        for (Creature creature : islandMap.getAllCreature()) {
+
+            if (creature instanceof Herbivore) {
+                currentHerbivore++;
+            } else if (creature instanceof Predator) {
+                currentPredators++;
+            }
+
+        }
+
+        if (currentHerbivore <= (maxHerbivore * (0.1 / 100))) {
+            System.out.println("----SIMULATION_END");
+            System.out.println("----HERBIVORE<0.1%");
+            return false;
+        } else if (currentPredators <= (maxPredators * (1.0 / 100))) {
+            System.out.println("----SIMULATION_END");
+            System.out.println("----PREDATORS<1%");
+            return false;
+        }
+
+        return true;
     }
 
     private void sleep(int millis) {

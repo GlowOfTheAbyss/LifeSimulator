@@ -3,16 +3,21 @@ package main.java.map;
 import main.java.entities.Creature;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IslandMap {
 
     private Location[][] locations;
 
+    private int size;
+    private final List<Location> locationList = new ArrayList<>();
+
     public IslandMap() {}
 
     public IslandMap createMap(int length, int height) {
 
+        size = length * height;
         generateLocations(length, height);
         linkLocations();
         return this;
@@ -56,13 +61,24 @@ public class IslandMap {
 
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public List<Location> getLocationList() {
+        if (locationList.isEmpty()) {
+            for (Location[] location : locations) {
+                locationList.addAll(Arrays.asList(location));
+            }
+        }
+        return locationList;
+    }
+
     public List<Creature> getAllCreature() {
         List<Creature> allCreatures = new ArrayList<>();
 
-        for (Location[] locations : locations) {
-            for (Location location : locations) {
-                allCreatures.addAll(location.getCreatures());
-            }
+        for (Location location : getLocationList()) {
+            allCreatures.addAll(location.getCreatures());
         }
 
         return allCreatures;
